@@ -289,12 +289,11 @@ h2 .reset-time-local {
     cursor: pointer;
     line-height: 1.5;
 }
-#site-header button:not(:last-of-type) { margin-right: 0.5rem; }
-#site-header button:not(:first-of-type) { margin-left: 0.5rem; }
+#site-controls > :not(:last-child) { margin-right: 0.5rem; }
+#site-controls > :not(:first-child) { margin-left: 0.5rem; }
 /* language switcher: custom dropdown (native <select> popups can't be themed) */
 #language-switcher {
     position: relative;
-    margin-right: 0.5rem;
 }
 .lang-trigger {
     display: inline-flex;
