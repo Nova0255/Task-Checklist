@@ -21,6 +21,7 @@ export default {
         "aria.closeError": "",
         "aria.closeMenu": "",
         "aria.closeSchedule": "",
+        "aria.closeMoreInfo": "",
         "aria.selectLanguage": "",
 
         // language switcher
@@ -169,6 +170,7 @@ export default {
         weekly_netracells: { text: "", location: "", npc: "", prereq: "", info: "" },
         weekly_eda: { text: "", location: "", npc: "", prereq: "", info: "" },
         weekly_eta: { text: "", location: "", npc: "", prereq: "", info: "" },
+        weekly_clan_initiative: { text: "", location: "", terminal: "", prereq: "" },
         weekly_calendar: { text: "", location: "", terminal: "", prereq: "" },
         weekly_invigorations: { text: "", location: "", npc: "", prereq: "" },
         weekly_descendia: { text: "", location: "", terminal: "" },
@@ -181,6 +183,8 @@ export default {
         weekly_bird3: { text: "", location: "", npc: "", prereq: "" },
         weekly_nightcap: { text: "", location: "", npc: "", prereq: "" },
         weekly_zorba: { text: "", location: "", npc: "", prereq: "" },
+        weekly_kaya: { text: "", location: "", npc: "", prereq: "" },
+        weekly_hunhow: { text: "", location: "", npc: "", prereq: "" },
 
         // --- other ---
         other_baro: { text: "", location: "", npc: "" },
@@ -192,113 +196,110 @@ export default {
     },
 
     cycles: {
-        // column names
-        "Item": "",
-        "Tileset": "",
-        "Boss": "",
-        "Season": "",
-        "Mission": "",
-        "Price": "",
-        "Location": "",
-        "Increased Spawns": "",
-        "Items": "",
-        "Coda Weapons": "",
+        // column headers
+        "item": "",
+        "items": "",
+        "tileset": "",
+        "mission": "",
+        "boss": "",
+        "season": "",
+        "increased_spawns": "",
+        "location": "",
+        "coda_weapons": "",
 
         // weekly_ayatan items
-        "Ayatan Sah Sculpture": "",
-        "Ayatan Ayr Sculpture": "",
-        "Ayatan Orta Sculpture": "",
-        "Ayatan Vaya Sculpture": "",
-        "Ayatan Piv Sculpture": "",
-        "Ayatan Valana Sculpture": "",
+        "ayatan_sah": "",
+        "ayatan_ayr": "",
+        "ayatan_orta": "",
+        "ayatan_vaya": "",
+        "ayatan_piv": "",
+        "ayatan_valana": "",
 
-        // weekly_ayatan tileset
-        "Orokin Derelict (Deimos)": "",
-        "Orokin Tower (Void)": "",
+        // tilesets (shared across cycles)
+        "orokin_derelict": "",
+        "orokin_tower": "",
+        "spaceport_orb_vallis": "",
+        "grineer_forest_earth": "",
+        "grineer_settlement_mars": "",
+        "corpus_gas_city_jupiter": "",
+        "murex": "",
 
-        // weekly_kahl_garrison mission
-        "Sneaky Sabotage": "",
-        "Junk Run": "",
-        "Prison Break": "",
+        // weekly_kahl_garrison missions
+        "sneaky_sabotage": "",
+        "junk_run": "",
+        "prison_break": "",
 
-        // weekly_kahl_garrison tileset
-        "Spaceport (Orb Vallis, Venus)": "",
-        "Grineer Forest (Earth)": "",
-        "Murex": "",
+        // archon shards (weekly_archon_hunt + weekly_bird3)
+        "archon_shard_azure": "",
+        "archon_shard_crimson": "",
+        "archon_shard_amber": "",
 
-        // weekly_archon_hunt items
-        "Azure Archon Shard": "",
-        "Crimson Archon Shard": "",
-        "Amber Archon Shard": "",
+        // weekly_archon_hunt bosses (keep emoji, translate the name)
+        "archon_boreal": "",
+        "archon_amar": "",
+        "archon_nira": "",
 
-        // weekly_archon_hunt bosses
-        "🦉 Archon Boreal": "",
-        "🐺 Archon Amar": "",
-        "🐍 Archon Nira": "",
+        // weekly_duviri_circuit (normal)
+        "circuit_normal_week_1": "",
+        "circuit_normal_week_2": "",
+        "circuit_normal_week_3": "",
+        "circuit_normal_week_4": "",
+        "circuit_normal_week_5": "",
+        "circuit_normal_week_6": "",
+        "circuit_normal_week_7": "",
+        "circuit_normal_week_8": "",
+        "circuit_normal_week_9": "",
+        "circuit_normal_week_10": "",
+        "circuit_normal_week_11": "",
 
-        // weekly_archon_hunt tilesets
-        "Grineer Settlement (Mars)": "",
-        "Corpus Gas City (Jupiter)": "",
-
-        // weekly_duviri_circuit items
-        "Blueprints for Excalibur, Trinity, or Ember": "",
-        "Blueprints for Loki, Mag, or Rhino": "",
-        "Blueprints for Ash, Frost, or Nyx": "",
-        "Blueprints for Saryn, Vauban, or Nova": "",
-        "Blueprints for Nekros, Valkyr, or Oberon": "",
-        "Blueprints for Hydroid, Mirage, or Limbo": "",
-        "Blueprints for Mesa, Chroma, or Atlas": "",
-        "Blueprints for Ivara, Inaros, or Titania": "",
-        "Blueprints for Nidus, Octavia, or Harrow": "",
-        "Blueprints for Gara, Khora, or Revenant": "",
-        "Blueprints for Garuda, Baruuk, or Hildryn": "",
-
-        // weekly_duviri_circuit_sp items
-        "Incarnon Adapters for Braton, Kunai, Lato, Paris, and Skana": "",
-        "Incarnon Adapters for Angstrum, Anku, Boar, Gammacor, and Gorgon": "",
-        "Incarnon Adapters for Bo, Furax, Furis, Latron, and Strun": "",
-        "Incarnon Adapters for Boltor, Bronco, Ceramic Dagger, Lex, and Magistar": "",
-        "Incarnon Adapters for Atomos, Dual Ichor, Dual Toxocyst, Miter, and Torid": "",
-        "Incarnon Adapters for Ack & Brunt, Burston, Nami Solo, Soma, and Vasto": "",
-        "Incarnon Adapters for Despair, Dread, Hate, Sibear, and Zylok": "",
-        "Incarnon Adapters for Cestra, Dera, Okina, Sicarus, and Sybaris": "",
+        // weekly_duviri_circuit_sp
+        "circuit_sp_week_1": "",
+        "circuit_sp_week_2": "",
+        "circuit_sp_week_3": "",
+        "circuit_sp_week_4": "",
+        "circuit_sp_week_5": "",
+        "circuit_sp_week_6": "",
+        "circuit_sp_week_7": "",
+        "circuit_sp_week_8": "",
+        "circuit_sp_week_9": "",
 
         // weekly_calendar seasons
-        "Winter": "",
-        "Spring": "",
-        "Summer": "",
-        "Autumn": "",
+        "season_winter": "",
+        "season_spring": "",
+        "season_summer": "",
+        "season_autumn": "",
 
-        // weekly_calendar increased spawns (keep emoji, translate eximus type)
-        "❄️ Arctic Eximus": "",
-        "🟢 Jade Light Eximus": "",
-        "🔥 Arson Eximus": "",
-        "🧲 Energy Leech Eximus": "",
+        // weekly_calendar increased spawns (keep emoji, translate the eximus type)
+        "eximus_arctic": "",
+        "eximus_jade_light": "",
+        "eximus_arson": "",
+        "eximus_energy_leech": "",
 
         // weekly_teshin items
-        "Umbra Forma Blueprint": "",
-        "50,000 Kuva": "",
-        "Kitgun Riven Mod": "",
-        "3x Built Forma": "",
-        "Zaw Riven Mod": "",
-        "30,000 Endo": "",
-        "Rifle Riven Mod": "",
-        "Shotgun Riven Mod": "",
+        "umbra_forma_blueprint": "",
+        "kuva_50000": "",
+        "riven_kitgun": "",
+        "forma_built_3x": "",
+        "riven_zaw": "",
+        "endo_30000": "",
+        "riven_rifle": "",
+        "riven_shotgun": "",
 
-        // other_baro locations
-        "Strata Relay, Earth": "",
-        "Larunda Relay, Mercury": "",
-        "Kronia Relay, Saturn": "",
-        "Orcus Relay, Pluto (MR 8+)": "",
+        // other_baro relay locations
+        "relay_strata_earth": "",
+        "relay_larunda_mercury": "",
+        "relay_kronia_saturn": "",
+        "relay_orcus_pluto": "",
 
-        // other_eleanor coda weapons
-        "Hema, Sporothrix, Catabolyst, Pox, Dual Torxica, Mire, and Motovore": "",
-        "Bassocyst, Bubonico, Synapse, Tysis, Caustacyst, Hirudo, and Pathocyst": "",
+        // other_eleanor coda weapon batches
+        "coda_weapons_batch_a": "",
+        "coda_weapons_batch_b": "",
     },
 
     moreInfo: {
         daily_first_win_bonus: "",
         daily_syndicate_gain: "",
         daily_syndicate_spend: "",
+        weekly_clan_initiative: "",
     },
 };

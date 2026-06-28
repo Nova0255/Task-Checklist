@@ -4,22 +4,17 @@
 //
 // Traduction active. Les clés vides ("") ou absentes reviennent à en.js
 // (voir ../i18n.js) ; tout ce qui est laissé vide affiche la valeur anglaise par défaut.
-import { iconURL } from "../../functions.js";
-
-function _factionIcon(name) {
-    const src = iconURL(`tasks/Syndicats/${name}`);
-    return `<img class="icon-filter inline-icon" src="${src}">`;
-}
+import { factionIcon } from "../../functions.js";
 
 const _baseOfOperationsTooltip = `<span class="tooltip" title="Orbiter, Camp du Drifter ou Arrière-salle">Base d'opérations</span>`;
 
 const factions = `<p>Les Syndicats de Faction sont
-                 ${_factionIcon("FactionSigilRebels.png")}Le Méridien d'Acier,
-                 ${_factionIcon("FactionSigilJudge.png")}Les Arbitres d'Hexis,
-                 ${_factionIcon("FactionSigilOracle.png")}Céphalon Suda,
-                 ${_factionIcon("FactionSigilBusiness.png")}La Séquence Perrin,
-                 ${_factionIcon("FactionSigilAssassins.png")}Le Voile Rouge,
-                 et ${_factionIcon("FactionSigilChurch.png")}Le Nouveau Loka.</p>
+                 ${factionIcon("FactionSigilRebels.png")}Le Méridien d'Acier,
+                 ${factionIcon("FactionSigilJudge.png")}Les Arbitres d'Hexis,
+                 ${factionIcon("FactionSigilOracle.png")}Céphalon Suda,
+                 ${factionIcon("FactionSigilBusiness.png")}La Séquence Perrin,
+                 ${factionIcon("FactionSigilAssassins.png")}Le Voile Rouge,
+                 et ${factionIcon("FactionSigilChurch.png")}Le Nouveau Loka.</p>
                  <p>Prêtez allégeance à un syndicat de faction depuis la console Syndicats de votre ${_baseOfOperationsTooltip}.</p>`;
 
 export default {
@@ -36,6 +31,7 @@ export default {
         "aria.closeError": "Fermer le message d'erreur",
         "aria.closeMenu": "Fermer le menu",
         "aria.closeSchedule": "Fermer le calendrier",
+        "aria.closeMoreInfo": "Fermer les infos",
         "aria.selectLanguage": "Choisir la langue",
 
         // language switcher
@@ -158,7 +154,7 @@ export default {
         },
         daily_world_syndicate_parent: { text: "Syndicats du monde (réputation)" },
         daily_world_syndicate_simaris: { text: "Céphalon Simaris", location: "N'importe quel Relais" },
-        daily_world_syndicate_ostron: { text: "Ostron", location: "Cetus, Terre", prereq: "Saya's Vigil" },
+        daily_world_syndicate_ostron: { text: "Ostron", location: "Cetus, Terre", prereq: "La  Veillée de Saya" },
         daily_world_syndicate_quills: { text: "Les Plumes", location: "Cetus, Terre", prereq: "La Guerre Intérieure" },
         daily_world_syndicate_solaris: { text: "Union Solaris", location: "Fortuna, Vénus", prereq: "Vox Solaris (Quête)" },
         daily_world_syndicate_vox: { text: "Vox Solaris", location: "Fortuna, Vénus", prereq: "La Guerre Intérieure" },
@@ -167,7 +163,7 @@ export default {
         daily_world_syndicate_necraloid: { text: "Necraloïde", location: "Necralisk, Deimos", prereq: "La Guerre Intérieure" },
         daily_world_syndicate_holdfasts: { text: "Les Irréductibles", location: "Chrysalith, Zariman", prereq: "Les Anges du Zariman" },
         daily_world_syndicate_cavia: { text: "Cavia", location: "Sanctum Anatomica, Deimos", prereq: "Murmures dans les murs" },
-        daily_world_syndicate_hex: { text: "L'Hexagone", location: "Höllvania Central Mall", prereq: "L'Hexagone (Quête)" },
+        daily_world_syndicate_hex: { text: "L'Hexagone", location: "Centre Commercial Höllvania", prereq: "L'Hexagone (Quête)" },
         daily_sortie: {
             text: "Sortie : Terminez les 3 missions quotidiennes de la Sortie.",
             location: "Base d'opérations",
@@ -188,20 +184,22 @@ export default {
             terminal: "POM-2 PC",
         },
         daily_kim_hex_parent: { text: "L'Hexagone", prereq: "L'Hexagone (Quête)" },
-        daily_kim_arthur: { text: "Broadsword (Arthur)" },
-        daily_kim_eleanor: { text: "Salem (Eleanor)" },
-        daily_kim_lettie: { text: "Belladona (Lettie)" },
-        daily_kim_amir: { text: "H16h V0l7463 (Amir)" },
-        daily_kim_aoi: { text: "xX GLIMMER Xx (Aoi)" },
-        daily_kim_quincy: { text: "Soldja1Shot1kil (Quincy)" },
-        daily_kim_roundtable_parent: { text: "The Roundtable", prereq: "L'Hexagone (Quête) Finale" },
-        daily_kim_flare: { text: "Liminus_Star (Flare)", prereq: "Rang 4 L'Hexagone" },
-        daily_kim_minerva_velimir: { text: "MomToxicated & PapaPolar (Minerva & Velimir)", prereq: "Rang 5 L'Hexagone" },
-        daily_kim_kaya: { text: "KOLTrial_5115 (Kaya)", prereq: "Rang 5 L'Hexagone" },
-        daily_kim_devils_triad_parent: { text: "The Devil's Triad", prereq: "L'Ancienne Paix" },
-        daily_kim_marie: { text: "Marie" },
-        daily_kim_roathe: { text: "Roathe" },
-        daily_kim_lyon: { text: "Lyon", prereq: "\"Apprécié\" par Marie" },
+        // proto-frame handles are script-neutral — leave text blank to inherit the canonical
+        // value from tasks.json (rose and all); only the French prereqs differ
+        daily_kim_arthur: { text: "" },
+        daily_kim_eleanor: { text: "" },
+        daily_kim_lettie: { text: "" },
+        daily_kim_amir: { text: "" },
+        daily_kim_aoi: { text: "" },
+        daily_kim_quincy: { text: "" },
+        daily_kim_roundtable_parent: { text: "La Table Ronde", prereq: "L'Hexagone (Quête) Finale" },
+        daily_kim_flare: { text: "", prereq: "Rang 4 L'Hexagone" },
+        daily_kim_minerva_velimir: { text: "", prereq: "Rang 5 L'Hexagone" },
+        daily_kim_kaya: { text: "", prereq: "Rang 5 L'Hexagone" },
+        daily_kim_devils_triad_parent: { text: "La Triade du Diable", prereq: "L'Ancienne Paix" },
+        daily_kim_marie: { text: "" },
+        daily_kim_roathe: { text: "" },
+        daily_kim_lyon: { text: "", prereq: "\"Apprécié\" par Marie" },
         daily_vendors: { text: "Vendeurs" },
         daily_acrithis: {
             text: "Acrithis : Consultez l'offre quotidienne d'Arcanes et de scènes Captura.",
@@ -238,7 +236,7 @@ export default {
         },
         weekly_kahl_garrison: {
             text: "Briser Narmer : Terminez la mission hebdomadaire de Kahl pour du Stock.",
-            location: "Drifter's Camp, Terre",
+            location: "Camp du Voyageur, Terre",
             npc: "Kahl",
             prereq: "Brise-Voile",
         },
@@ -277,10 +275,16 @@ export default {
         },
         weekly_eta: {
             text: "Archimédée Temporelle : Tentez l'Archimédée d'Élite hebdomadaire pour de grandes chances d'obtenir un Fragment d'Archonte (réservé au endgame).",
-            location: "Höllvania Central Mall",
-            npc: "Kaya",
+            location: "Centre Commercial Höllvania",
+            npc: "Kaya Velasco",
             prereq: "Rang 5 L'Hexagone",
             info: "Coûte 2 Impulsions de Recherche pour le débloquer pour la semaine",
+        },
+        weekly_clan_initiative: {
+            text: "Initiatives Hebdomadaires de Clan : Gagnez des récompenses en jouant avec les membres de votre clan.",
+            location: "N'importe quelle Mission*",
+            terminal: "Menu &#x1F782; Communication &#x1F782; Clan",
+            prereq: "Appartenance à un Clan",
         },
         weekly_calendar: {
             text: "Calendrier 1999 : Terminez les tâches hebdomadaires du calendrier.",
@@ -347,6 +351,18 @@ export default {
             npc: "Aspirant Zorba",
             prereq: "Le Fardeau de Harrow",
         },
+        weekly_kaya: {
+            text: "Kaya : Échangez des Puces Pix contre des Arcanes.",
+            location: "Centre Commercial Höllvania",
+            npc: "Kaya Velasco",
+            prereq: "Archimédée Temporelle d'Élite",
+        },
+        weekly_hunhow: {
+            text: "Hunhow : Échangez des Talents Émeraude / Écarlate contre du Kuva.",
+            location: "Tour Pontis, Uranus",
+            npc: "Hunhow",
+            prereq: "Les ombres de Jade : Constellations",
+        },
 
         // --- other ---
         other_baro: {
@@ -375,91 +391,104 @@ export default {
             text: "Armes Tenet : Consultez la boutique d'Ergo Glast pour de bons bonus de valence.",
             location: "N'importe quel Relais",
             npc: "Ergo Glast",
-            prereq: "The Archwing + Palier de maîtrise 14",
+            prereq: "L'Archwing + Palier de maîtrise 14",
         },
         other_eleanor: {
             text: "Armes Coda : Consultez la boutique d'Eleanor pour de bons bonus de valence.",
-            location: "Höllvania Central Mall",
+            location: "Centre Commercial Höllvania",
             npc: "Eleanor Nightingale",
             prereq: "L'Hexagone (Quête)",
         },
     },
 
+    // keyed against cycles.json (see ../i18n.js); only keys that differ from English
+    // need an entry — anything omitted falls back to en.js.
     cycles: {
-        // column names
-        "Item": "Objet",
-        "Tileset": "Tileset",
-        "Boss": "Boss",
-        "Season": "Saison",
-        "Mission": "Mission",
-        "Price": "Prix",
-        "Location": "Lieu",
-        "Increased Spawns": "Apparitions accrues",
-        "Items": "Objets",
-        "Coda Weapons": "Armes Coda",
+        // column headers
+        "item": "Objet",
+        "items": "Objets",
+        "season": "Saison",
+        "location": "Lieu",
+        "increased_spawns": "Apparitions accrues",
+        "coda_weapons": "Armes Coda",
 
-        // weekly_ayatan tileset
-        "Orokin Derelict (Deimos)": "Épave orokin (Deimos)",
-        "Orokin Tower (Void)": "Tour orokin (Le Néant)",
+        // weekly_ayatan items
+        "ayatan_sah": "Sculpture Ayatan Sah",
+        "ayatan_ayr": "Sculpture Ayatan Ayr",
+        "ayatan_orta": "Sculpture Ayatan Orta",
+        "ayatan_vaya": "Sculpture Ayatan Vaya",
+        "ayatan_piv": "Sculpture Ayatan Piv",
+        "ayatan_valana": "Sculpture Ayatan Valana",
 
-        // weekly_kahl_garrison tileset
-        "Spaceport (Orb Vallis, Venus)": "Spatioport (Orb Vallis, Vénus)",
-        "Grineer Forest (Earth)": "Forêt grineer (Terre)",
+        // tilesets
+        "orokin_derelict": "Épave orokin (Deimos)",
+        "orokin_tower": "Tour orokin (Le Néant)",
+        "spaceport_orb_vallis": "Spatioport (Orb Vallis, Vénus)",
+        "grineer_forest_earth": "Forêt grineer (Terre)",
+        "grineer_settlement_mars": "Colonie grineer (Mars)",
+        "corpus_gas_city_jupiter": "Cité gazière corpus (Jupiter)",
 
-        // weekly_archon_hunt tilesets
-        "Grineer Settlement (Mars)": "Colonie grineer (Mars)",
-        "Corpus Gas City (Jupiter)": "Cité gazière corpus (Jupiter)",
+        // weekly_kahl_garrison missions
+        "sneaky_sabotage": "Sabotage Sournois",
+        "junk_run": "Casse dans la Casse",
+        "prison_break": "La Grande Évasion",
 
-        // weekly_duviri_circuit items
-        "Blueprints for Excalibur, Trinity, or Ember": "Plans pour Excalibur, Trinity ou Ember",
-        "Blueprints for Loki, Mag, or Rhino": "Plans pour Loki, Mag ou Rhino",
-        "Blueprints for Ash, Frost, or Nyx": "Plans pour Ash, Frost ou Nyx",
-        "Blueprints for Saryn, Vauban, or Nova": "Plans pour Saryn, Vauban ou Nova",
-        "Blueprints for Nekros, Valkyr, or Oberon": "Plans pour Nekros, Valkyr ou Oberon",
-        "Blueprints for Hydroid, Mirage, or Limbo": "Plans pour Hydroid, Mirage ou Limbo",
-        "Blueprints for Mesa, Chroma, or Atlas": "Plans pour Mesa, Chroma ou Atlas",
-        "Blueprints for Ivara, Inaros, or Titania": "Plans pour Ivara, Inaros ou Titania",
-        "Blueprints for Nidus, Octavia, or Harrow": "Plans pour Nidus, Octavia ou Harrow",
-        "Blueprints for Gara, Khora, or Revenant": "Plans pour Gara, Khora ou Revenant",
-        "Blueprints for Garuda, Baruuk, or Hildryn": "Plans pour Garuda, Baruuk ou Hildryn",
+        // archon shards (shared by weekly_archon_hunt + weekly_bird3)
+        "archon_shard_azure": "Fragment d'Archonte Azure",
+        "archon_shard_crimson": "Fragment d'Archonte Écarlate",
+        "archon_shard_amber": "Fragment d'Archonte Ambre",
 
-        // weekly_duviri_circuit_sp items
-        "Incarnon Adapters for Braton, Kunai, Lato, Paris, and Skana": "Incarnon Adapters pour Braton, Kunai, Lato, Paris et Skana",
-        "Incarnon Adapters for Angstrum, Anku, Boar, Gammacor, and Gorgon": "Incarnon Adapters pour Angstrum, Anku, Boar, Gammacor et Gorgon",
-        "Incarnon Adapters for Bo, Furax, Furis, Latron, and Strun": "Incarnon Adapters pour Bo, Furax, Furis, Latron et Strun",
-        "Incarnon Adapters for Boltor, Bronco, Ceramic Dagger, Lex, and Magistar": "Incarnon Adapters pour Boltor, Bronco, Ceramic Dagger, Lex et Magistar",
-        "Incarnon Adapters for Atomos, Dual Ichor, Dual Toxocyst, Miter, and Torid": "Incarnon Adapters pour Atomos, Dual Ichor, Dual Toxocyst, Miter et Torid",
-        "Incarnon Adapters for Ack & Brunt, Burston, Nami Solo, Soma, and Vasto": "Incarnon Adapters pour Ack & Brunt, Burston, Nami Solo, Soma et Vasto",
-        "Incarnon Adapters for Despair, Dread, Hate, Sibear, and Zylok": "Incarnon Adapters pour Despair, Dread, Hate, Sibear et Zylok",
-        "Incarnon Adapters for Cestra, Dera, Okina, Sicarus, and Sybaris": "Incarnon Adapters pour Cestra, Dera, Okina, Sicarus et Sybaris",
+        // weekly_duviri_circuit (normal)
+        "circuit_normal_week_1": "Plans pour Excalibur, Trinity ou Ember",
+        "circuit_normal_week_2": "Plans pour Loki, Mag ou Rhino",
+        "circuit_normal_week_3": "Plans pour Ash, Frost ou Nyx",
+        "circuit_normal_week_4": "Plans pour Saryn, Vauban ou Nova",
+        "circuit_normal_week_5": "Plans pour Nekros, Valkyr ou Oberon",
+        "circuit_normal_week_6": "Plans pour Hydroid, Mirage ou Limbo",
+        "circuit_normal_week_7": "Plans pour Mesa, Chroma ou Atlas",
+        "circuit_normal_week_8": "Plans pour Ivara, Inaros ou Titania",
+        "circuit_normal_week_9": "Plans pour Nidus, Octavia ou Harrow",
+        "circuit_normal_week_10": "Plans pour Gara, Khora ou Revenant",
+        "circuit_normal_week_11": "Plans pour Garuda, Baruuk ou Hildryn",
+
+        // weekly_duviri_circuit_sp
+        "circuit_sp_week_1": "Incarnon Adapters pour Braton, Kunai, Lato, Paris et Skana",
+        "circuit_sp_week_2": "Incarnon Adapters pour Angstrum, Anku, Boar, Gammacor et Gorgon",
+        "circuit_sp_week_3": "Incarnon Adapters pour Bo, Furax, Furis, Latron et Strun",
+        "circuit_sp_week_4": "Incarnon Adapters pour Boltor, Bronco, Ceramic Dagger, Lex et Magistar",
+        "circuit_sp_week_5": "Incarnon Adapters pour Atomos, Dual Ichor, Dual Toxocyst, Miter et Torid",
+        "circuit_sp_week_6": "Incarnon Adapters pour Ack & Brunt, Burston, Nami Solo, Soma et Vasto",
+        "circuit_sp_week_7": "Incarnon Adapters pour Despair, Dread, Hate, Sibear et Zylok",
+        "circuit_sp_week_8": "Incarnon Adapters pour Cestra, Dera, Okina, Sicarus et Sybaris",
+        "circuit_sp_week_9": "Incarnon Adapters pour Ballistica, Destreza, Obex, Stug et Vectis",
 
         // weekly_calendar seasons
-        "Winter": "Hiver",
-        "Spring": "Printemps",
-        "Summer": "Été",
-        "Autumn": "Automne",
+        "season_winter": "Hiver",
+        "season_spring": "Printemps",
+        "season_summer": "Été",
+        "season_autumn": "Automne",
 
         // weekly_calendar increased spawns (keep emoji, translate eximus type)
-        "❄️ Arctic Eximus": "❄️ Eximus Arctique",
-        "🟢 Jade Light Eximus": "🟢 Eximus Lumière de Jade",
-        "🔥 Arson Eximus": "🔥 Eximus Incendiaire",
-        "🧲 Energy Leech Eximus": "🧲 Eximus Sangsue d'Énergie",
+        "eximus_arctic": "❄️ Eximus Arctique",
+        "eximus_jade_light": "🟢 Eximus Lumière de Jade",
+        "eximus_arson": "🔥 Eximus Incendiaire",
+        "eximus_energy_leech": "🧲 Eximus Sangsue d'Énergie",
 
         // weekly_teshin items
-        "Umbra Forma Blueprint": "Forma Umbra (Schéma)",
-        "50,000 Kuva": "50 000 Kuva",
-        "Kitgun Riven Mod": "Mod Riven de Kitgun",
-        "3x Built Forma": "3 Forma fabriqués",
-        "Zaw Riven Mod": "Mod Riven de Zaw",
-        "30,000 Endo": "30 000 Endo",
-        "Rifle Riven Mod": "Mod Riven de Fusil",
-        "Shotgun Riven Mod": "Mod Riven de Fusil à Pompe",
+        "umbra_forma_blueprint": "Forma Umbra (Schéma)",
+        "kuva_50000": "50 000 Kuva",
+        "riven_kitgun": "Mod Riven de Kitgun",
+        "forma_built_3x": "3 Forma fabriqués",
+        "riven_zaw": "Mod Riven de Zaw",
+        "endo_30000": "30 000 Endo",
+        "riven_rifle": "Mod Riven de Fusil",
+        "riven_shotgun": "Mod Riven de Fusil à Pompe",
 
-        // other_baro locations
-        "Strata Relais, Earth": "Relais Strata, Terre",
-        "Larunda Relais, Mercury": "Relais Larunda, Mercure",
-        "Kronia Relais, Saturn": "Relais Kronia, Saturne",
-        "Orcus Relais, Pluto (MR 8+)": "Relais Orcus, Pluton (PM 8+)",
+        // other_baro relay locations
+        "relay_strata_earth": "Relais Strata, Terre",
+        "relay_larunda_mercury": "Relais Larunda, Mercure",
+        "relay_kronia_saturn": "Relais Kronia, Saturne",
+        "relay_orcus_pluto": "Relais Orcus, Pluton (PM 8+)",
     },
 
     moreInfo: {
@@ -513,5 +542,11 @@ export default {
 
         daily_syndicate_gain: factions,
         daily_syndicate_spend: factions,
+
+        weekly_clan_initiative: `<p>Jouez en escouade avec d'autres membres de votre Clan pour gagner des ressources bonus pour le Coffre de votre Clan. Ces ressources bonus contribuent également à votre piste de récompenses personnelle de la semaine. La progression dépend de la quantité de ressources collectées lors de missions avec les membres de votre clan.</p>
+    <p>Chaque semaine, une planète aléatoire octroie le double de ressources bonus pour le Coffre (et le double de progression de la piste de récompenses) pour les missions qui y sont jouées.</p>
+    <p>Consultez la planète actuellement boostée et suivez votre progression de récompenses dans le menu du Clan.</p>
+    <p><strong>Remarque :</strong> Vous pouvez utiliser l'option de matchmaking « Clan uniquement » pour rejoindre des escouades avec les membres de votre Clan ou de votre Alliance, mais jouer avec des membres de l'Alliance n'octroie <em>pas</em> de ressources bonus pour le Coffre ni de progression de récompenses.</p>
+    <p>* Les missions Descendia ne contribuent pas aux Initiatives Hebdomadaires de Clan.</p>`,
     },
 };

@@ -24,11 +24,11 @@
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "required": ["name", "order"],
+                        "required": ["nameKey", "order"],
                         "additionalProperties": false,
                         "properties": {
-                            "name": {
-                                "description": "the column header (e.g. Item, Tileset)",
+                            "nameKey": {
+                                "description": "key for the column header, resolved against the `cycles` map in the locale files (en.js is canonical)",
                                 "type": "string"
                             },
                             "align": {
@@ -42,15 +42,23 @@
                                 "type": "array",
                                 "items": {
                                     "type": "object",
-                                    "required": ["text"],
+                                    "required": ["textKey"],
                                     "additionalProperties": false,
                                     "properties": {
-                                        "text": {
-                                            "description": "name of the item",
+                                        "textKey": {
+                                            "description": "key for the item text, resolved against the `cycles` map in the locale files (en.js is canonical)",
                                             "type": "string"
                                         },
                                         "icon": {
                                             "description": "icon for the item, relative to `sources/img/icons/cycles`",
+                                            "type": "string"
+                                        },
+                                        "cost": {
+                                            "description": "optional inline cost shown after the item (e.g. Teshin's Steel Essence price). A locale-invariant literal (number), so it is NOT keyed/translated like `textKey`.",
+                                            "type": "string"
+                                        },
+                                        "costIcon": {
+                                            "description": "icon for the `cost` currency, relative to `sources/img/icons/cycles`",
                                             "type": "string"
                                         },
                                         "iconFilter": {

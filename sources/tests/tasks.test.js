@@ -6,7 +6,8 @@ import tasks from "../js/tasks.json" with {type: "json"};
 import tasks_schema from "./tasks.schema.json" with {type: "json"};
 import cycles from "../js/cycles.json" with {type: "json"};
 import cycles_schema from "./cycles.schema.json" with {type: "json"};
-import moreInfo from "../js/moreInfo";
+import en from "../js/i18n/locales/en.js";
+import { TASK_FIELDS } from "../js/i18n/i18n.js";
 
 const ajv = new Ajv({ allErrors: true });
 addFormats(ajv);
@@ -69,10 +70,26 @@ describe("valildate task definitions", () => {
         });
     });
 
-    describe("validate moreInfo", () => {
-        test.for(Object.keys(moreInfo).map((i) => [i]))("%s", ([task_id]) => {
+    describe("validate en.js moreInfo (canonical)", () => {
+        test.for(Object.keys(en.moreInfo).map((i) => [i]))("%s", ([task_id]) => {
             expect(task_ids, "moreInfo keys must be task ids from `tasks.json`").toContain(task_id);
-            expect(moreInfo[task_id]).toBeTypeOf("string");
+            expect(en.moreInfo[task_id]).toBeTypeOf("string");
+        });
+    });
+
+    describe("validate en.js tasks (canonical source of task text)", () => {
+        test("every en.tasks key is a real task id", () => {
+            const bogus = Object.keys(en.tasks).filter((id) => !task_ids.includes(id));
+            expect(bogus, `unknown ids in en.tasks: ${bogus.join(", ")}`).toEqual([]);
+        });
+        test("every task has canonical English text in en.tasks", () => {
+            const missing = task_ids.filter((id) => !en.tasks[id] || !en.tasks[id].text);
+            expect(missing, `tasks missing en.tasks text: ${missing.join(", ")}`).toEqual([]);
+        });
+        test("en.tasks fields are all valid TASK_FIELDS", () => {
+            const bad = Object.entries(en.tasks).flatMap(([id, f]) =>
+                Object.keys(f).filter((k) => !TASK_FIELDS.includes(k)).map((k) => `${id}.${k}`));
+            expect(bad, `unknown fields: ${bad.join(", ")}`).toEqual([]);
         });
     });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { isDst, parseDuration } from "../js/functions.js";
+import { isDst, parseDuration, factionIcon } from "../js/functions.js";
 
 describe("Daylight Saving Time", () => {
     test.for([
@@ -80,5 +80,16 @@ describe("parseDuration", () => {
         const consoleWarn = vi.spyOn(console, "warn");
         expect(parseDuration(d)).toEqual(expected);
         expect(consoleWarn).toHaveBeenCalledTimes(warnings);
+    });
+});
+
+describe("factionIcon", () => {
+    test("wraps a syndicate sigil in an inline-icon img with a resolved path", () => {
+        const html = factionIcon("FactionSigilRebels.png");
+        expect(html).toMatch(/^<img class="icon-filter inline-icon" src="[^"]+">$/);
+        // path must be lowercase `tasks/syndicates/` — wrong casing makes iconURL return undefined,
+        // which 404s on case-sensitive filesystems (the bug this guards against)
+        expect(html).toContain("tasks/syndicates/FactionSigilRebels.png");
+        expect(html).not.toContain("undefined");
     });
 });

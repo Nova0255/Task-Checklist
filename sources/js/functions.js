@@ -29,6 +29,14 @@ export function makeCycleIcon(cycleData) {
     }
 }
 
+// inline cost shown after an item (e.g. Teshin's Steel Essence prices). `cost` is a
+// locale-invariant literal (a number), so it's not keyed/translated like `text`.
+export function makeCycleCost(cycleData) {
+    if (!cycleData.cost) { return ""; }
+    const icon = makeCycleIcon({ icon: cycleData.costIcon });
+    return `<span class="cycle-cost">${cycleData.cost}${icon}</span>`;
+}
+
 export function formatTimestamp(timestamp) {
     if (!timestamp) return 'Never';
     try {

@@ -2,6 +2,8 @@
 // Locales are imported statically (not fetched at runtime) so Vite inlines them into the build.
 // `en` is canonical: complete `ui` dict, empty content overlays (English lives in the JSON/JS data).
 
+import { langChevronIcon, langCheckIcon, langExternalIcon, langSelectIcon } from "../icons.js";
+
 // Auto-discover every locale in ./locales/. Vite bundles eager-globbed files at
 // build time, so this still inlines into the single-file build (no runtime fetch).
 // To add a language: drop a `<code>.js` file in ./locales/ — no edits here needed.
@@ -24,7 +26,7 @@ for (const path in localeModules) {
 const FALLBACK = LOCALE_MODULES[DEFAULT_LOCALE];
 
 // task fields the `tasks` overlay may translate
-const TASK_FIELDS = ["text", "location", "prereq", "info", "terminal", "npc"];
+export const TASK_FIELDS = ["text", "location", "prereq", "info", "terminal", "npc"];
 
 // where contributors add/fill in translations (linked from the switcher footer)
 export const TRANSLATE_URL = "https://github.com/warframe-tools/Task-Checklist/tree/main/sources/js/i18n";
@@ -106,6 +108,10 @@ export function getMeta() {
     return LOCALE_MODULES[currentLocale].meta;
 }
 
+// app registers a callback here to re-render in place on locale change (avoids a full reload/flash)
+let onLocaleChange = null;
+export function onLocaleChanged(callback) { onLocaleChange = callback; }
+
 export function setLocale(code) {
     if (!Object.hasOwn(LOCALE_MODULES, code)) {
         console.warn(`i18n: unknown locale '${code}', ignoring.`);
@@ -118,7 +124,11 @@ export function setLocale(code) {
         console.warn("i18n: could not persist locale preference.", e);
     }
     currentLocale = code;
-    location.reload(); // simplest way to re-render every string + all task content
+    if (onLocaleChange) {
+        onLocaleChange(); // re-render every string + all task content in place
+    } else {
+        location.reload(); // fallback if no in-place handler is registered
+    }
 }
 
 // substitute {placeholder} tokens
@@ -150,18 +160,22 @@ export function baseOfOperationsHTML() {
     return `<span class="tooltip" title="${t("baseOfOperations.tooltip")}">${t("baseOfOperations.label")}</span>`;
 }
 
-// overlay translated task text in place; no-op for en
+// resolve task text fields from keys (task id) and write them onto the task objects.
+// English is canonical in en.js, so this runs for every locale (en included). Re-runnable:
+// it always recomputes each field from locale → en, so switching language in place is safe.
 export function localizeTasks(tasks) {
     const overlay = LOCALE_MODULES[currentLocale].tasks || {};
+    const en = FALLBACK.tasks || {};
 
     function walk(task) {
-        const fields = overlay[task.id];
-        if (fields) {
-            for (const field of TASK_FIELDS) {
-                // empty string = not translated yet; leave the English value in place
-                if (Object.hasOwn(fields, field) && fields[field] !== "") {
-                    task[field] = fields[field];
-                }
+        const trFields = overlay[task.id] || {};
+        const enFields = en[task.id] || {};
+        for (const field of TASK_FIELDS) {
+            // locale value if translated (non-empty), else the canonical English in en.js
+            if (Object.hasOwn(trFields, field) && trFields[field] !== "") {
+                task[field] = trFields[field];
+            } else if (Object.hasOwn(enFields, field)) {
+                task[field] = enFields[field];
             }
         }
         if (task.subtasks) { task.subtasks.forEach(walk); }
@@ -172,30 +186,41 @@ export function localizeTasks(tasks) {
     }
 }
 
-// overlay translated cycle column names + cell text in place; no-op for en
+// resolve cycle column/cell text from keys in cycles.json (nameKey/textKey) and write
+// the display strings onto `name`/`text` so downstream rendering is unchanged. English
+// is canonical in en.js, so this runs for every locale (en included) — not a no-op.
 export function localizeCycles(cycles) {
-    const textMap = LOCALE_MODULES[currentLocale].cycles || {};
-    // empty string = not translated yet; keep the original cell/column text
-    const tr = (s) => (Object.hasOwn(textMap, s) && textMap[s] !== "" ? textMap[s] : s);
+    const map = LOCALE_MODULES[currentLocale].cycles || {};
+    const en = FALLBACK.cycles || {};
+    // empty string in a locale = not translated yet; fall back to en, then the raw key
+    const tr = (key) => {
+        if (Object.hasOwn(map, key) && map[key] !== "") { return map[key]; }
+        if (Object.hasOwn(en, key) && en[key] !== "") { return en[key]; }
+        console.warn(`i18n: missing cycle translation key '${key}'.`);
+        return key;
+    };
 
     for (const id in cycles) {
         for (const column of cycles[id].columns) {
-            if (column.name) { column.name = tr(column.name); }
+            if (column.nameKey) { column.name = tr(column.nameKey); }
             for (const cell of column.order) {
-                if (cell.text) { cell.text = tr(cell.text); }
+                if (cell.textKey) { cell.text = tr(cell.textKey); }
             }
         }
     }
 }
 
-// translated moreInfo HTML for a task id, or undefined to keep the default
+// moreInfo HTML for a task id: locale translation → canonical English (en.js) → undefined.
+// English is canonical in en.js, so en is the fallback (no separate moreInfo.js anymore).
 export function getMoreInfo(id) {
     const overlay = LOCALE_MODULES[currentLocale].moreInfo || {};
-    // empty string = not translated yet; undefined keeps the default English moreInfo
-    return Object.hasOwn(overlay, id) && overlay[id] !== "" ? overlay[id] : undefined;
+    const en = FALLBACK.moreInfo || {};
+    if (Object.hasOwn(overlay, id) && overlay[id] !== "") { return overlay[id]; }
+    if (Object.hasOwn(en, id) && en[id] !== "") { return en[id]; }
+    return undefined;
 }
 
-// translate <html lang>, title, and elements tagged data-i18n / data-i18n-html / data-i18n-aria-label
+// translate <html lang>, title, and any [data-i18n] / [data-i18n-aria-label] elements
 export function applyStaticTranslations(root = document) {
     try {
         document.documentElement.lang = getMeta().htmlLang;
@@ -207,22 +232,16 @@ export function applyStaticTranslations(root = document) {
     root.querySelectorAll("[data-i18n]").forEach((el) => {
         el.textContent = t(el.dataset.i18n);
     });
-    root.querySelectorAll("[data-i18n-html]").forEach((el) => {
-        el.innerHTML = t(el.dataset.i18nHtml);
-    });
     root.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
         el.setAttribute("aria-label", t(el.dataset.i18nAriaLabel));
     });
 }
 
-const CHEVRON_SVG = `<svg class="lang-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>`;
-const CHECK_SVG = `<svg class="lang-check" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`;
-const EXTERNAL_SVG = `<svg class="lang-ext" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>`;
-
 // custom button + listbox dropdown (a native <select> popup can't be themed)
 export function setupLanguageSwitcher(container) {
     if (!container) { return; }
     container.innerHTML = "";
+    container.classList.remove("open"); // clear any leftover open state when rebuilding
 
     const current = AVAILABLE_LOCALES.find((l) => l.code === currentLocale) || AVAILABLE_LOCALES[0];
 
@@ -233,7 +252,7 @@ export function setupLanguageSwitcher(container) {
     trigger.setAttribute("aria-expanded", "false");
     trigger.setAttribute("aria-controls", "lang-menu");
     trigger.setAttribute("aria-label", t("aria.selectLanguage"));
-    trigger.innerHTML = `<span class="lang-current">${current.code.toUpperCase()}</span>${CHEVRON_SVG}`;
+    trigger.innerHTML = `${langSelectIcon}<span class="lang-current">${current.code.toUpperCase()}</span>${langChevronIcon}`;
 
     const menu = document.createElement("ul");
     menu.id = "lang-menu";
@@ -249,10 +268,10 @@ export function setupLanguageSwitcher(container) {
         item.setAttribute("aria-selected", selected ? "true" : "false");
         item.dataset.code = code;
         item.tabIndex = -1;
-        item.innerHTML = `<span class="lang-option-code">${code.toUpperCase()}</span><span class="lang-option-name">${label}</span>${selected ? CHECK_SVG : ""}`;
+        item.innerHTML = `<span class="lang-option-code">${code.toUpperCase()}</span><span class="lang-option-name">${label}</span>${selected ? langCheckIcon : ""}`;
         item.addEventListener("click", () => {
-            if (code !== currentLocale) { setLocale(code); } // reloads the page
-            else { close(); }
+            close(); // tear down listeners + `open` state before setLocale rebuilds the switcher
+            if (code !== currentLocale) { setLocale(code); }
         });
         menu.appendChild(item);
     }
@@ -262,7 +281,7 @@ export function setupLanguageSwitcher(container) {
     help.className = "lang-option lang-help";
     help.setAttribute("role", "option");
     help.tabIndex = -1;
-    help.innerHTML = `<span class="lang-option-name">${t("lang.helpTranslate")}</span>${EXTERNAL_SVG}`;
+    help.innerHTML = `<span class="lang-option-name">${t("lang.helpTranslate")}</span>${langExternalIcon}`;
     help.addEventListener("click", () => {
         window.open(TRANSLATE_URL, "_blank", "noopener");
         close();

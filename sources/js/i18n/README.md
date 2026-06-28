@@ -10,9 +10,10 @@ translation? You only need to touch `locales/` — no other files.
   edit this.
 - **`locales/<code>.js`** — one file per language. Files are auto-discovered, so
   **adding a language is just dropping a new file in `locales/`**.
-- **`en.js` is canonical.** It holds the complete `ui` key set; every other
-  locale falls back to it. English task/cycle/moreInfo content lives in the
-  source data (`tasks.json`, `cycles.json`, `moreInfo.js`), not in `en.js`.
+- **`en.js` is canonical and the source of truth for all wording.** It holds the
+  complete `ui` key set plus the English `tasks`, `cycles`, and `moreInfo` content;
+  every other locale falls back to it. `tasks.json` / `cycles.json` hold only
+  structure (ids, icons, refs) — to change English wording, edit `en.js`.
 - **Empty `""` = "not translated yet"** and falls back to English. So partial
   translations are safe — translate as much as you want, leave the rest blank.
 - **A language only shows in the switcher once its `meta.ready` is `true`**
@@ -37,7 +38,7 @@ Each file already lists every string that can be translated, grouped by section:
 |---|---|
 | `ui` | Interface strings (buttons, labels, messages). Keys must match `en.js`. |
 | `tasks` | Per-task text, keyed by task id. Only the fields a task actually has. |
-| `cycles` | Cycle table column names + cell text. **Keys are the English source string**, value is the translation. |
+| `cycles` | Cycle table column names + cell text, keyed by the `nameKey`/`textKey` slugs from `cycles.json` (e.g. `item`, `ayatan_sah`). |
 | `moreInfo` | The long HTML "More Info" panels, keyed by task id. |
 
 ## Rules
@@ -48,8 +49,8 @@ Each file already lists every string that can be translated, grouped by section:
   keep plain text in `aria.*` / title strings.
 - **Don't add keys that aren't in `en.js`** — stray/typo `ui` keys fail the
   tests. Don't remove keys either; leave them `""` if untranslated.
-- **`cycles` keys must exactly match the English source** in `cycles.json`
-  (e.g. `"Strata Relay, Earth"`, not `"Relais"`), or the lookup won't match.
+- **`cycles` keys are the `textKey`/`nameKey` slugs** from `cycles.json` (and must
+  exist in `en.cycles`) — translate the value, don't change the key.
 - **Localized `location` strings that mention the base of operations** must use
   the `baseOfOperations.label` value verbatim (the tests check this).
 
@@ -61,5 +62,7 @@ npx vitest run     # one-shot
 ```
 
 The `i18n` test suite checks every non-English locale for: all `en` keys
-present, no stray keys, placeholders preserved, real task ids, and
-base-of-operations consistency.
+present, no stray keys, placeholders preserved, real task ids, valid task field
+names, and base-of-operations consistency. It also guards the canonical `en.js`
+content — every task has English `text`, and `en.tasks` / `en.moreInfo` keys are
+all real task ids.

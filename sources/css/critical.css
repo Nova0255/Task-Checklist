@@ -222,6 +222,7 @@ h2 .reset-time-local {
     font-weight: 400;
     color: var(--text-secondary);
     margin-left: 0.5rem;
+    font-variant-numeric: tabular-nums; /* fixed-width digits so the ticking timer doesn't jitter */
 }
 .app-description {
     color: var(--text-secondary);
@@ -319,8 +320,9 @@ h2 .reset-time-local {
     outline: 2px solid var(--theme-toggle-hover-border);
     outline-offset: 2px;
 }
-.lang-trigger .lang-chevron { width: 0.8rem; height: 0.8rem; flex-shrink: 0; transition: transform 0.2s ease; }
-#language-switcher.open .lang-chevron { transform: rotate(180deg); }
+.lang-trigger svg:first-child { width: 0.95rem; height: 0.95rem; flex-shrink: 0; } /* language glyph */
+.lang-trigger svg:last-child { width: 0.8rem; height: 0.8rem; flex-shrink: 0; transition: transform 0.2s ease; } /* chevron */
+#language-switcher.open .lang-trigger svg:last-child { transform: rotate(180deg); }
 .lang-current { font-variant-numeric: tabular-nums; }
 
 .lang-menu {
@@ -362,7 +364,7 @@ h2 .reset-time-local {
 .lang-option-name { flex: 1; font-size: 0.875rem; }
 .lang-option.is-selected,
 .lang-option.is-selected .lang-option-code { color: var(--text-header); }
-.lang-check { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--text-header); }
+.lang-option:not(.lang-help) svg { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--text-header); } /* selected check */
 
 /* "help translate" footer link, separated from the language list */
 .lang-help {
@@ -372,10 +374,10 @@ h2 .reset-time-local {
     color: var(--text-secondary);
 }
 .lang-help .lang-option-name { font-size: 0.8rem; }
-.lang-ext { width: 0.8rem; height: 0.8rem; flex-shrink: 0; }
+.lang-help svg { width: 0.8rem; height: 0.8rem; flex-shrink: 0; } /* external-link */
 
 @media (prefers-reduced-motion: reduce) {
-    .lang-trigger .lang-chevron { transition: none; }
+    .lang-trigger svg:last-child { transition: none; }
 }
 #site-header button svg {
     width: 1.25rem;

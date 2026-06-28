@@ -179,6 +179,10 @@ a.git-hash-text {
     color: var(--baro-timer-color);
     margin-left: 0.4rem;
     display: inline-block;
+    /* fixed-width digits so the ticking timer keeps a constant width and doesn't bounce
+       between the title line and the next line (esp. with longer translated titles) */
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 
@@ -406,6 +410,15 @@ body:not(.light-mode) img.icon-filter {
     display: inline;
     vertical-align: text-bottom;
     margin: 0 0.25em;
+}
+/* inline cost after an item (e.g. Teshin's Steel Essence price) */
+.cycle-cost {
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.cycle-cost::before {
+    content: "·";
+    margin: 0 0.4em;
 }
 .current-cycle span:last-of-type {
     margin-right: 1em;

@@ -5,6 +5,7 @@ import {
     modulo,
     iconURL,
     makeCycleIcon,
+    makeCycleCost,
     formatTimestamp,
     getMostRecentMondayMidnightUTC,
     getNextDailyMidnightUTC,
@@ -34,10 +35,10 @@ const dailyBackgroundImageIds = [
     'bg-image-4',
     // Add more IDs if you add more background image divs in HTML
 ];
-const APP_VERSION = "5.1";
+const APP_VERSION = "6.0.0";
 const GIT_COMMIT_HASH_LONG = import.meta.env.VITE_GIT_COMMIT_HASH;
 const GIT_COMMIT_HASH = GIT_COMMIT_HASH_LONG.slice(0,7);
-const WARFRAME_VERSION = "43.0.2";
+const WARFRAME_VERSION = "43.0.3";
 const THEME_STORAGE_KEY = 'warframeChecklistTheme';
 
 // only update DATA_STORAGE_KEY when the data storage format changes
@@ -47,7 +48,6 @@ const DATA_STORAGE_KEY = "warframeChecklistData_format1";
 // --- Task Data ---
 import tasks from "./tasks.json" with {type: "json"};
 import cycles from "./cycles.json" with {type: "json"};
-import moreInfo from "./moreInfo.js";
 
 function _prepTasks() {
     // overlay translations onto the task/cycle data first so everything downstream sees localized text
@@ -59,9 +59,8 @@ function _prepTasks() {
             if (task.ref) { // alternate ref tasks need a period for countdown and reset to work correctly
                 task.period = period;
             }
-            if (task.id in moreInfo) {
-                task.moreInfo = i18n.getMoreInfo(task.id) ?? moreInfo[task.id];
-            }
+            const moreInfo = i18n.getMoreInfo(task.id);
+            if (moreInfo) { task.moreInfo = moreInfo; }
         }
     }
     tasks.daily.forEach(prep("1d"));
@@ -649,9 +648,9 @@ function createChecklistItem(task, isChecked, isSubtask = false) {
             label.classList.toggle("checked", currentlyChecked);
 
             // Update parent task checkboxes
-            let t = task;
-            while (t.parentId) {  // walk up the task tree
-                let parentTaskDefinition = getTaskById(t.parentId)
+            let node = task;
+            while (node.parentId) {  // walk up the task tree
+                let parentTaskDefinition = getTaskById(node.parentId)
 
                 if (parentTaskDefinition && parentTaskDefinition.subtasks) {
                     const allSubtasksChecked = parentTaskDefinition.subtasks.every((st) => checklistData.progress[st.id]);
@@ -665,7 +664,7 @@ function createChecklistItem(task, isChecked, isSubtask = false) {
                     if (parentTextSpan) {parentTextSpan.classList.toggle("checked", allSubtasksChecked);}
                 }
 
-                t = parentTaskDefinition;  // move up a level
+                node = parentTaskDefinition;  // move up a level
             }
             saveData();
         });
@@ -727,7 +726,7 @@ function showScheduleAction(task, period, cycleIndex, isAvailable) {
             for (const column of cycles[task.id].columns) {
                 const cellData = column.order[modulo(cycleIndex + i, cycleCount)];
                 const align = column.align ? ` style="text-align: ${column.align}"` : "";
-                row += `<td${align}>${makeCycleIcon(cellData)}${cellData.text}</td>`;
+                row += `<td${align}>${makeCycleIcon(cellData)}${cellData.text}${makeCycleCost(cellData)}</td>`;
             }
 
             row += "</tr>";
@@ -798,6 +797,8 @@ function makeInfoLine(task, appendTo) {
             const cycleText = document.createElement("span");
             cycleText.textContent = cycleData.text;
             currentCycle.appendChild(cycleText);
+
+            currentCycle.innerHTML += makeCycleCost(cycleData);
 
             const showSchedule = document.createElement("button");
             showSchedule.type = "button";
@@ -1105,9 +1106,21 @@ function loadData() {
     }
 }
 
+// re-render all locale-dependent content in place when the language changes (no page reload/flash)
+function rerenderForLocale() {
+    _prepTasks();                                          // re-localize task + cycle data
+    i18n.applyStaticTranslations();                        // <title>, <html lang>, [data-i18n] elements
+    i18n.setupLanguageSwitcher(languageSwitcherElement);   // refresh the switcher label + close its menu
+    ["daily", "weekly", "other"].forEach(populateSection); // rebuild the task list from re-localized data
+    updateLastSavedDisplay(checklistData.lastSaved);
+    if (wfVersionElement) { wfVersionElement.textContent = t("footer.warframeVersion", { version: WARFRAME_VERSION }); }
+    handleResets();                                        // refresh countdown label strings
+}
+
 export function loadAndInitializeApp() {
     initializeDOMElements();
     i18n.applyStaticTranslations();
+    i18n.onLocaleChanged(rerenderForLocale);
     i18n.setupLanguageSwitcher(languageSwitcherElement);
     hideError();
     loadThemePreference();
